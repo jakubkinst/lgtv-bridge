@@ -1,6 +1,6 @@
-FROM node:7
+FROM node:10
 WORKDIR /app
-COPY package.json /app
+COPY package*.json ./
 RUN npm install
 COPY . /app
 ENV TV_MAC="xx:xx:xx:xx:xx:xx" \
@@ -8,4 +8,4 @@ ENV TV_MAC="xx:xx:xx:xx:xx:xx" \
     SERVICE_PORT=4000 \
     CALLBACK_URL_ON="" \
     CALLBACK_URL_OFF=""
-CMD node index.js service
+CMD ["node index.js"]
