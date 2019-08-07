@@ -1,9 +1,0 @@
-[
-  { 
-    "displayName": "Mute mode", 
-    "commandON": "ssap://audio/setMute", 
-    "commandOFF": "ssap://audio/setMute",
-    "paramsON": {"mute": "true"},
-    "paramsOFF": {"mute": 0}
-  }
-]
