@@ -5,11 +5,9 @@ const URL = require('url');
 const LGTV = require('lgtv2');
 
 function init(command, arg) {
-    turnOn(() =>{
-        console.log('TV Turned ON')
-    });
     const tv = LGTV({
-        url: 'ws://' + process.env.TV_IP + ':3000'
+        url: 'ws://' + process.env.TV_IP + ':3000',
+        reconnect: 1000
     });
     tv.on('connect', function () {
         console.log('connected');
@@ -18,6 +16,18 @@ function init(command, arg) {
             if (res.changed.indexOf('volume') !== -1) console.log('volume changed', res.volume);
             if (res.changed.indexOf('muted') !== -1) console.log('mute changed', res.muted);
         });
+
+        // notify power status
+        if (process.env.POWER_ON_CALLBACK) {
+            console.log("Notifying POWER STATUS ON");
+            request(process.env.POWER_ON_CALLBACK, {json: true}, (err, res, body) => {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log(body.url);
+                console.log(body.explanation);
+            });
+        }
     });
 
     if (checkMacAddress() && checkIPAddress())
@@ -101,9 +111,7 @@ function executeCommand(command, params, callback) {
 
 
 function turnOn(callback) {
-    var wol = require("node-wol");
-
-    wol.wake(process.env.TV_MAC,{}, callback);
+    require("node-wol").wake(process.env.TV_MAC,{}, callback);
 }
 
 init(process.argv[2], process.argv[3]);
